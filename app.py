@@ -17,6 +17,17 @@ app = Flask(__name__)
 app.config.from_object(__name__)
 
 
+@app.route('/')
+def show_entries():
+    """
+    Searches the database for entries, then displays them
+    """
+    db = _open_db()
+    cur = db.execute('SELECT * FROM entries ORDER BY id DESC')
+    entries = cur.fetchall()
+    return render_template('index.html', entries=entries)
+
+
 def init_db():
     """
     Create the database
