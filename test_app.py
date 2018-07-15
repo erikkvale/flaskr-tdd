@@ -66,19 +66,46 @@ class FlaskrTestCase(unittest.TestCase):
         """
         Ensure database is blank
         """
-        pass
+        rv = self.app.get('/')
+        assert b'No entries here so far' in rv.data
 
     def test_login_logout(self):
         """
         Test login and logout with helper functions
         """
-        pass
+        rv = self.login(
+            app.app.config['USERNAME'],
+            app.app.config['PASSWORD']
+        )
+        assert b'You were logged in' in rv.data
+        rv = self.logout()
+        assert b'You were logged out' in rv.data
+        rv = self.login(
+            app.app.config['USERNAME'] + 'x',
+            app.app.config['PASSWORD']
+        )
+        assert b'Invalid username' in rv.data
+        rv = self.login(
+            app.app.config['USERNAME'],
+            app.app.config['PASSWORD'] + 'x'
+        )
+        assert b'Invalid password' in rv.data
 
     def test_messages(self):
         """
         Test user can post messges
         """
-        pass
+        self.login(
+            app.app.config['USERNAME'],
+            app.app.config['PASSWORD']
+        )
+        rv = self.app.post('/add', data=dict(
+            title='<Hello>',
+            text='<strong>HTML</strong> allowed here'
+        ), follow_redirects=True)
+        assert b'No entries here so far' not in rv.data
+        assert b'&lt;Hello&gt;' in rv.data
+        assert b'<strong>HTML</strong> allowed here' in rv.data
 
 
 
