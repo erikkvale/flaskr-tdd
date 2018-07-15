@@ -40,7 +40,6 @@ class FlaskrTestCase(unittest.TestCase):
         os.close(self.db_file_desc)
         os.unlink(app.app.config['DATABASE'])
 
-
     def login(self, username, password):
         """
         Login helper function
@@ -60,7 +59,26 @@ class FlaskrTestCase(unittest.TestCase):
         """
         return self.app.get('/logout', follow_redirects=True)
 
+    #=======================
+    # Test methods
+    #=======================
+    def test_empty_db(self):
+        """
+        Ensure database is blank
+        """
+        pass
 
+    def test_login_logout(self):
+        """
+        Test login and logout with helper functions
+        """
+        pass
+
+    def test_messages(self):
+        """
+        Test user can post messges
+        """
+        pass
 
 
 
