@@ -2,6 +2,7 @@ import unittest
 import os
 import tempfile
 import app
+import json
 
 
 class BasicTestCase(unittest.TestCase):
@@ -107,7 +108,13 @@ class FlaskrTestCase(unittest.TestCase):
         assert b'&lt;Hello&gt;' in rv.data
         assert b'<strong>HTML</strong> allowed here' in rv.data
 
-
+    def test_delete_message(self):
+        """
+        Ensure messages are being deleted
+        """
+        response = self.app.get('/delete/1')
+        data = json.loads((response.data).decode('utf-8'))
+        self.assertEqual(data['status'], 1)
 
 
 if __name__=='__main__':
