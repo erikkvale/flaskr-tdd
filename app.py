@@ -54,6 +54,23 @@ def logout():
     return redirect(url_for('index'))
 
 
+@app.route('/add', methods=['POST'])
+def add_entry():
+    """
+    Add new post to database
+    """
+    if not session.get('logged_in'):
+        abort(401)
+    db = _open_db()
+    db.execute(
+        'INSERT INTO entries (title, text) values (?, ?)',
+        [request.form['title'], request.form['text']]
+    )
+    db.commit()
+    flash('New entry was successfully posted')
+    return redirect(url_for('index'))
+
+
 def init_db():
     """
     Create the database
