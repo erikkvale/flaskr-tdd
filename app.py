@@ -18,7 +18,7 @@ app.config.from_object(__name__)
 
 
 @app.route('/')
-def show_entries():
+def index():
     """
     Searches the database for entries, then displays them
     """
