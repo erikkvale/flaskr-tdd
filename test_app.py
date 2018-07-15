@@ -60,7 +60,7 @@ class FlaskrTestCase(unittest.TestCase):
         return self.app.get('/logout', follow_redirects=True)
 
     #=======================
-    # Test methods
+    # Test assertion methods
     #=======================
     def test_empty_db(self):
         """
