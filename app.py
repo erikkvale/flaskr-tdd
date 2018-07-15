@@ -71,6 +71,22 @@ def add_entry():
     return redirect(url_for('index'))
 
 
+@app.route('/delete/<post_id>', methods=['GET'])
+def delete_entry(post_id):
+    """
+    Delete post from database
+    """
+    result = {'status': 0, 'message': 'Error'}
+    try:
+        db = _open_db()
+        db.execute('DELETE FROM entries WHERE id=' + post_id)
+        db.commit()
+        result = {'status': 1, 'message': 'Post Deleted'}
+    except Exception as e:
+        result = {'status': 0, 'message': repr(e)}
+    return jsonify(result)
+
+
 def init_db():
     """
     Create the database
