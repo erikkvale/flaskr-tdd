@@ -6,7 +6,6 @@ from flask import (
     jsonify,
 )
 from flask_sqlalchemy import SQLAlchemy
-import models
 
 # Base directory (where this file runs)
 base_dir = os.path.abspath(os.path.dirname(__file__))
@@ -30,6 +29,7 @@ app = Flask(__name__)
 app.config.from_object(__name__)
 db = SQLAlchemy(app)
 
+import models
 
 # Full path for database
 base_dir = os.path
