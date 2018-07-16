@@ -1,38 +1,34 @@
 import os
-import sqlite3
-from flask import (
-    Flask, request, session, g, redirect,
-    url_for, abort, render_template, flash,
-    jsonify,
-)
+
+from flask import Flask, request, session, g, redirect, url_for, \
+     abort, render_template, flash, jsonify
 from flask_sqlalchemy import SQLAlchemy
 
-# Base directory (where this file runs)
-base_dir = os.path.abspath(os.path.dirname(__file__))
 
-# Config
+# get the folder where this file runs
+basedir = os.path.abspath(os.path.dirname(__file__))
+
+# configuration
 DATABASE = 'flaskr.db'
 DEBUG = True
-SECRET_KEY = 'my_real_precious'
+SECRET_KEY = 'my_precious'
 USERNAME = 'admin'
-PASSWORD = 'password'
+PASSWORD = 'admin'
 
-# Database path
-DATABASE_PATH = os.path.join(base_dir, DATABASE)
+# define the full path for the database
+DATABASE_PATH = os.path.join(basedir, DATABASE)
 
-# SQLAlchemy database config
+# database config
 SQLALCHEMY_DATABASE_URI = 'sqlite:///' + DATABASE_PATH
 SQLALCHEMY_TRACK_MODIFICATIONS = False
 
-# Create and initialize app
+# create app
 app = Flask(__name__)
 app.config.from_object(__name__)
 db = SQLAlchemy(app)
 
 import models
 
-# Full path for database
-base_dir = os.path
 
 @app.route('/')
 def index():
@@ -92,44 +88,14 @@ def delete_entry(post_id):
     return jsonify(result)
 
 
-def init_db():
-    """
-    Create the database
-    """
-    with app.app_context():
-        db = _open_db()
-        with app.open_resource('schema.sql', mode='r') as f:
-            db.cursor().executescript(f.read())
-        db.commit()
+@app.route('/search/', methods=['GET'])
+def search():
+    query = request.args.get("query")
+    entries = db.session.query(models.Flaskr)
+    if query:
+        return render_template('search.html', entries=entries, query=query)
+    return render_template('search.html')
 
 
-def _connect_db():
-    """
-    Connects to the database
-    """
-    conn = sqlite3.connect(app.config['DATABASE'])
-    conn.row_factory = sqlite3.Row
-    return conn
-
-
-def _open_db():
-    """
-    Open database connnection
-    """
-    if not hasattr(g, 'sqlite_db'):
-        g.sqlite_db = _connect_db()
-    return g.sqlite_db
-
-
-@app.teardown_appcontext
-def _close_db(error):
-    """
-    Close database connection
-    """
-    if hasattr(g, 'sqlite_db'):
-        g.sqlite_db.close()
-
-
-if __name__=='__main__':
-    init_db()
+if __name__ == '__main__':
     app.run()
